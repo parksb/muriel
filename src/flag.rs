@@ -39,10 +39,7 @@ pub fn list() {
 
     let paths = fs::read_dir("./data").expect("Failed to read directory");
     for path in paths {
-        let file = File::open(path.unwrap().path()).expect("Failed to open file");
-        let reader = BufReader::new(file);
-        let mut lines_iter = reader.lines().map(|l| l.unwrap());
-        let regex = Regex::new(r"^\w*:").unwrap();
+        let book = read_data(path.unwrap().path().into_os_string().to_str().unwrap());
 
         println!(
             "\x1b[1;36m{0: <5} {1: <15} {2: <30} {3: <20} {4: <10}\x1b[0m",
@@ -50,11 +47,47 @@ pub fn list() {
         );
         println!(
             "{0: <5} {1: <15} {2: <30} {3: <20} {4: <10}",
-            regex.replace_all(&lines_iter.next().unwrap(), ""),
-            regex.replace_all(&lines_iter.next().unwrap(), ""),
-            regex.replace_all(&lines_iter.next().unwrap(), ""),
-            regex.replace_all(&lines_iter.next().unwrap(), ""),
-            regex.replace_all(&lines_iter.next().unwrap(), ""),
+            book.id,
+            book.author,
+            book.title,
+            book.publisher,
+            book.published_at,
         );
+    }
+}
+
+pub fn remove(id: &str) {
+    println!("📖 Remove a book\n");
+
+    let book = read_data(&format!("{}/{}", "./data", id));
+    let book_info = book.author.to_string() + ", " +
+        &book.title + ", " +
+        &book.publisher + ", " +
+        &book.published_at;
+
+    loop {
+        let check = get_user_input(String::from("Are you sure to remove \x1b[1;33m".to_string() + &book_info + "\x1b[0m? (y/n)"));
+        if check == "y" || check == "yes" {
+            fs::remove_file("./data/".to_string() + id).expect("Failed to remove file");
+            println!("\n🗑 {:#?}", book);
+            break;
+        } else if check == "n" || check == "no" {
+            break;
+        }
+    }
+}
+
+fn read_data(path: &str) -> Book {
+    let file = File::open(path).expect("Failed to open file");
+    let reader = BufReader::new(file);
+    let regex = Regex::new(r"^\w*:").unwrap();
+    let mut lines_iter = reader.lines().map(|l| l.unwrap());
+
+    Book {
+        id: regex.replace_all(&lines_iter.next().unwrap(), "").parse().unwrap(),
+        author: regex.replace_all(&lines_iter.next().unwrap(), "").to_string(),
+        title: regex.replace_all(&lines_iter.next().unwrap(), "").to_string(),
+        publisher: regex.replace_all(&lines_iter.next().unwrap(), "").to_string(),
+        published_at: regex.replace_all(&lines_iter.next().unwrap(), "").to_string(),
     }
 }
