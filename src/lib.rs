@@ -1,5 +1,8 @@
+use std::fs;
+
 #[derive(Debug)]
 pub struct Book {
+    pub id: i32,
     pub author: String,
     pub title: String,
     pub publisher: String,
@@ -13,7 +16,11 @@ impl Book {
         publisher: String,
         published_at: String
     ) -> Self {
+        let data = fs::read_dir("./data").expect("Failed to read directory");
+        let id = (data.count() + 1) as i32;
+
         Self {
+            id,
             author,
             title,
             publisher,

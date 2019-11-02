@@ -18,15 +18,13 @@ pub fn add() {
     let mut filepath = String::new();
     filepath.push_str(&(
         "./data/".to_string() +
-        &book.author + ", " +
-        &book.title + ", " +
-        &book.publisher + ", " +
-        &book.published_at
+        &book.id.to_string()
     ));
 
     let mut fileheader = String::new();
     fileheader.push_str(&(
-        "author:".to_string() + &book.author + "\n" +
+        "id:".to_string() + &book.id.to_string() + "\n" +
+        "author:" + &book.author + "\n" +
         "title:" + &book.title + "\n" +
         "publisher:" + &book.publisher + "\n" +
         "published_at:" + &book.published_at
@@ -47,7 +45,12 @@ pub fn list() {
         let regex = Regex::new(r"^\w*:").unwrap();
 
         println!(
-            "* {} \x1b[1;33m{}\x1b[0m {} {}",
+            "\x1b[1;36m{0: <5} {1: <15} {2: <30} {3: <20} {4: <10}\x1b[0m",
+            "id", "author", "title", "publisher", "published at"
+        );
+        println!(
+            "{0: <5} {1: <15} {2: <30} {3: <20} {4: <10}",
+            regex.replace_all(&lines_iter.next().unwrap(), ""),
             regex.replace_all(&lines_iter.next().unwrap(), ""),
             regex.replace_all(&lines_iter.next().unwrap(), ""),
             regex.replace_all(&lines_iter.next().unwrap(), ""),
