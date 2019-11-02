@@ -1,3 +1,8 @@
+mod app;
+mod flag;
+mod lib;
+
 fn main() {
-    println!("Hello, world!");
+    let matches = app::build();
+    app::run(matches);
 }
