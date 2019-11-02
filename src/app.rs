@@ -10,12 +10,20 @@ pub fn build() -> ArgMatches<'static> {
                 .short("a")
                 .help("Add a new book")
         )
+        .arg(
+            Arg::with_name("list")
+                .long("list")
+                .short("l")
+                .help("List all books")
+        )
         .get_matches()
 }
 
 pub fn run(matches: ArgMatches) {
     if matches.is_present("add") {
         flag::add();
+    } else if matches.is_present("list") {
+        flag::list();
     }
 }
 

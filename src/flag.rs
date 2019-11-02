@@ -1,5 +1,6 @@
-use std::fs::File;
-use std::io::Write;
+use regex::Regex;
+use std::fs::{self, File};
+use std::io::{Write, BufReader, BufRead};
 use crate::app::get_user_input;
 use crate::lib::Book;
 
@@ -33,4 +34,24 @@ pub fn add() {
 
     let mut file = File::create(&filepath).expect("Failed to create file");
     file.write_all(fileheader.as_bytes()).expect("Failed to write file");
+}
+
+pub fn list() {
+    println!("📖 List of the books\n");
+
+    let paths = fs::read_dir("./data").expect("Failed to read directory");
+    for path in paths {
+        let file = File::open(path.unwrap().path()).expect("Failed to open file");
+        let reader = BufReader::new(file);
+        let mut lines_iter = reader.lines().map(|l| l.unwrap());
+        let regex = Regex::new(r"^\w*:").unwrap();
+
+        println!(
+            "* {} \x1b[1;33m{}\x1b[0m {} {}",
+            regex.replace_all(&lines_iter.next().unwrap(), ""),
+            regex.replace_all(&lines_iter.next().unwrap(), ""),
+            regex.replace_all(&lines_iter.next().unwrap(), ""),
+            regex.replace_all(&lines_iter.next().unwrap(), ""),
+        );
+    }
 }
