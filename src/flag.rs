@@ -6,27 +6,21 @@ use crate::util::{get_user_input, read_data};
 pub fn add() {
     println!("📖 Add new book\n");
 
-    let author = get_user_input(String::from("Author"));
-    let title = get_user_input(String::from("Title"));
-    let publisher = get_user_input(String::from("Publisher"));
-    let publised_at = get_user_input(String::from("Published at"));
+    let author = get_user_input("Author");
+    let title = get_user_input("Title");
+    let publisher = get_user_input("Publisher");
+    let publised_at = get_user_input("Published at");
 
     let book: Book = Book::new(author, title, publisher, publised_at);
     println!("\n✅ {:#?}", book);
 
     let mut filepath = String::new();
-    filepath.push_str(&(
-        "./data/".to_string() +
-        &book.id.to_string()
-    ));
+    filepath.push_str(&format!("./data/{}", book.id.to_string()));
 
     let mut fileheader = String::new();
-    fileheader.push_str(&(
-        "id:".to_string() + &book.id.to_string() + "\n" +
-        "author:" + &book.author + "\n" +
-        "title:" + &book.title + "\n" +
-        "publisher:" + &book.publisher + "\n" +
-        "published_at:" + &book.published_at
+    fileheader.push_str(&format!(
+        "id:{}\nauthor:{}\ntitle:{}\npublisher:{}\npublished_at:{}",
+        book.id.to_string(), book.author, book.title, book.publisher, book.published_at,
     ));
 
     let mut file = File::create(&filepath).expect("Failed to create file");
@@ -46,11 +40,7 @@ pub fn list() {
         );
         println!(
             "{0: <5} {1: <15} {2: <30} {3: <20} {4: <10}",
-            book.id,
-            book.author,
-            book.title,
-            book.publisher,
-            book.published_at,
+            book.id, book.author, book.title, book.publisher, book.published_at,
         );
     }
 }
@@ -59,15 +49,12 @@ pub fn remove(id: &str) {
     println!("📖 Remove a book\n");
 
     let book = read_data(&format!("{}/{}", "./data", id));
-    let book_info = book.author.to_string() + ", " +
-        &book.title + ", " +
-        &book.publisher + ", " +
-        &book.published_at;
+    let book_info = format!("{}, {}, {}, {}", book.author, book.title, book.publisher, book.published_at);
 
     loop {
-        let check = get_user_input(String::from("Are you sure to remove \x1b[1;33m".to_string() + &book_info + "\x1b[0m? (y/n)"));
+        let check = get_user_input(&format!("Are you sure to remove \x1b[1;33m{}\x1b[0m? (y/n)", book_info));
         if check == "y" || check == "yes" {
-            fs::remove_file("./data/".to_string() + id).expect("Failed to remove file");
+            fs::remove_file(&format!("./data/{}", id)).expect("Failed to remove file");
             println!("\n🗑 {:#?}", book);
             break;
         } else if check == "n" || check == "no" {
