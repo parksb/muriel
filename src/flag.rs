@@ -1,8 +1,7 @@
-use regex::Regex;
 use std::fs::{self, File};
-use std::io::{Write, BufReader, BufRead};
-use crate::app::get_user_input;
+use std::io::Write;
 use crate::lib::Book;
+use crate::util::{get_user_input, read_data};
 
 pub fn add() {
     println!("📖 Add new book\n");
@@ -74,20 +73,5 @@ pub fn remove(id: &str) {
         } else if check == "n" || check == "no" {
             break;
         }
-    }
-}
-
-fn read_data(path: &str) -> Book {
-    let file = File::open(path).expect("Failed to open file");
-    let reader = BufReader::new(file);
-    let regex = Regex::new(r"^\w*:").unwrap();
-    let mut lines_iter = reader.lines().map(|l| l.unwrap());
-
-    Book {
-        id: regex.replace_all(&lines_iter.next().unwrap(), "").parse().unwrap(),
-        author: regex.replace_all(&lines_iter.next().unwrap(), "").to_string(),
-        title: regex.replace_all(&lines_iter.next().unwrap(), "").to_string(),
-        publisher: regex.replace_all(&lines_iter.next().unwrap(), "").to_string(),
-        published_at: regex.replace_all(&lines_iter.next().unwrap(), "").to_string(),
     }
 }
