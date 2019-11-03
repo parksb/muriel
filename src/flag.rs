@@ -4,8 +4,6 @@ use crate::lib::Book;
 use crate::util::{get_user_input, read_data};
 
 pub fn add() {
-    println!("📖 Add new book\n");
-
     let author = get_user_input("Author");
     let title = get_user_input("Title");
     let publisher = get_user_input("Publisher");
@@ -29,7 +27,6 @@ pub fn add() {
 }
 
 pub fn list() {
-    println!("📖 List of the books\n");
     println!(
         "\x1b[1;36m{0: <5} {1: <15} {2: <20} {3: <15} {4: <15} {5: <10}\x1b[0m",
         "id", "author", "title", "publisher", "published at", "progress"
@@ -58,8 +55,6 @@ pub fn list() {
 }
 
 pub fn remove(id: &str) {
-    println!("📖 Remove a book\n");
-
     let book = read_data(&format!("{}/{}", "./data", id));
     let book_info = format!("{}, {}, {}, {}", book.author, book.title, book.publisher, book.published_at);
 
