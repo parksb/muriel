@@ -10,8 +10,9 @@ pub fn add() {
     let title = get_user_input("Title");
     let publisher = get_user_input("Publisher");
     let publised_at = get_user_input("Published at");
+    let pages = get_user_input("Pages");
 
-    let book: Book = Book::new(author, title, publisher, publised_at);
+    let book: Book = Book::new(author, title, publisher, publised_at, pages.parse().unwrap());
     println!("\n✅ {:#?}", book);
 
     let mut filepath = String::new();
@@ -19,8 +20,8 @@ pub fn add() {
 
     let mut fileheader = String::new();
     fileheader.push_str(&format!(
-        "id:{}\nauthor:{}\ntitle:{}\npublisher:{}\npublished_at:{}",
-        book.id.to_string(), book.author, book.title, book.publisher, book.published_at,
+        "id:{}\nauthor:{}\ntitle:{}\npublisher:{}\npublished_at:{}\npages:{}\npage_at:{}",
+        book.id.to_string(), book.author, book.title, book.publisher, book.published_at, pages, book.page_at,
     ));
 
     let mut file = File::create(&filepath).expect("Failed to create file");
@@ -29,18 +30,29 @@ pub fn add() {
 
 pub fn list() {
     println!("📖 List of the books\n");
+    println!(
+        "\x1b[1;36m{0: <5} {1: <15} {2: <20} {3: <15} {4: <15} {5: <10}\x1b[0m",
+        "id", "author", "title", "publisher", "published at", "progress"
+    );
 
     let paths = fs::read_dir("./data").expect("Failed to read directory");
     for path in paths {
         let book = read_data(path.unwrap().path().into_os_string().to_str().unwrap());
 
+        let mut progress_str = String::from("[");
+        let progress = (book.page_at as f32 / book.pages as f32) * 100.0;
+        for i in 0..10 {
+            if i < (progress / 10.0) as i32 {
+                progress_str.push_str("=");
+            } else {
+                progress_str.push_str(" ");
+            }
+        }
+        progress_str.push_str("]");
+
         println!(
-            "\x1b[1;36m{0: <5} {1: <15} {2: <30} {3: <20} {4: <10}\x1b[0m",
-            "id", "author", "title", "publisher", "published at"
-        );
-        println!(
-            "{0: <5} {1: <15} {2: <30} {3: <20} {4: <10}",
-            book.id, book.author, book.title, book.publisher, book.published_at,
+            "{0: <5} {1: <15} {2: <20} {3: <15} {4: <15} {5: <10} {6:.0}%",
+            book.id, book.author, book.title, book.publisher, book.published_at, progress_str, progress as f32,
         );
     }
 }

@@ -7,6 +7,8 @@ pub struct Book {
     pub title: String,
     pub publisher: String,
     pub published_at: String,
+    pub pages: i32,
+    pub page_at: i32,
 }
 
 impl Book {
@@ -14,7 +16,8 @@ impl Book {
         author: String,
         title: String,
         publisher: String,
-        published_at: String
+        published_at: String,
+        pages: i32,
     ) -> Self {
         let data = fs::read_dir("./data").expect("Failed to read directory");
         let id = (data.count() + 1) as i32;
@@ -25,6 +28,8 @@ impl Book {
             title,
             publisher,
             published_at,
+            pages,
+            page_at: 0,
         }
     }
 }

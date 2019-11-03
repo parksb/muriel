@@ -15,6 +15,8 @@ pub fn read_data(path: &str) -> Book {
         title: regex.replace_all(&lines_iter.next().unwrap(), "").to_string(),
         publisher: regex.replace_all(&lines_iter.next().unwrap(), "").to_string(),
         published_at: regex.replace_all(&lines_iter.next().unwrap(), "").to_string(),
+        pages: regex.replace_all(&lines_iter.next().unwrap(), "").parse().unwrap(),
+        page_at: regex.replace_all(&lines_iter.next().unwrap(), "").parse().unwrap(),
     }
 }
 
