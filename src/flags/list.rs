@@ -1,5 +1,5 @@
 use std::fs::{self};
-use crate::util::{read_data};
+use crate::lib::{Book};
 
 pub fn run() {
     println!(
@@ -9,7 +9,8 @@ pub fn run() {
 
     let paths = fs::read_dir("./data").expect("Failed to read directory");
     for path in paths {
-        let book = read_data(path.unwrap().path().into_os_string().to_str().unwrap());
+        let serialized_book = fs::read_to_string(path.unwrap().path()).unwrap();
+        let book: Book = serde_json::from_str(&serialized_book).unwrap();
 
         let mut progress_str = String::from("[");
         let progress = (book.page_at as f32 / book.pages as f32) * 100.0;

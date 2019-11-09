@@ -1,8 +1,10 @@
 use std::fs::{self};
-use crate::util::{get_user_input, read_data};
+use crate::util::{get_user_input};
+use crate::lib::Book;
 
 pub fn run(id: &str) {
-    let book = read_data(&format!("{}/{}", "./data", id));
+    let serialized_book = fs::read_to_string(&format!("./data/{}", id)).unwrap();
+    let book: Book = serde_json::from_str(&serialized_book).unwrap();
     let book_info = format!("{}, {}, {}, {}", book.author, book.title, book.publisher, book.published_at);
 
     loop {

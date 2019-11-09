@@ -1,6 +1,7 @@
 use std::fs;
+use serde::{Serialize, Deserialize};
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Book {
     pub id: i32,
     pub author: String,

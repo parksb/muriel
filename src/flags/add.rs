@@ -11,16 +11,14 @@ pub fn run() {
     let pages = get_user_input("Pages");
 
     let book: Book = Book::new(author, title, publisher, publised_at, pages.parse().unwrap());
+    let serialized_book = serde_json::to_string(&book).unwrap();
     println!("\n✅ {:#?}", book);
 
     let mut filepath = String::new();
     filepath.push_str(&format!("./data/{}", book.id.to_string()));
 
     let mut fileheader = String::new();
-    fileheader.push_str(&format!(
-        "id:{}\nauthor:{}\ntitle:{}\npublisher:{}\npublished_at:{}\npages:{}\npage_at:{}",
-        book.id.to_string(), book.author, book.title, book.publisher, book.published_at, pages, book.page_at,
-    ));
+    fileheader.push_str(&serialized_book);
 
     let mut file = File::create(&filepath).expect("Failed to create file");
     file.write_all(fileheader.as_bytes()).expect("Failed to write file");
