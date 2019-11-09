@@ -1,5 +1,5 @@
 use clap::{App, Arg, ArgMatches};
-use crate::flag;
+use crate::flags;
 
 pub fn build() -> ArgMatches<'static> {
     App::new("muriel")
@@ -26,10 +26,10 @@ pub fn build() -> ArgMatches<'static> {
 
 pub fn run(matches: ArgMatches) {
     if matches.is_present("add") {
-        flag::add();
+        flags::add::run();
     } else if matches.is_present("list") {
-        flag::list();
+        flags::list::run();
     } else if matches.is_present("remove") {
-        flag::remove(matches.value_of("remove").unwrap());
+        flags::remove::run(matches.value_of("remove").unwrap());
     }
 }
