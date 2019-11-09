@@ -5,6 +5,7 @@ mod flags {
     pub mod add;
     pub mod list;
     pub mod remove;
+    pub mod update;
 }
 
 fn main() {
